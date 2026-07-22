@@ -420,7 +420,7 @@ Transform:
   m_GameObject: {fileID: 163269260}
   serializedVersion: 2
   m_LocalRotation: {x: 1.8451337e-18, y: 0.000000013983506, z: -2.5801438e-26, w: 1}
-  m_LocalPosition: {x: 1, y: 1, z: -9}
+  m_LocalPosition: {x: 1.5, y: 1, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -620,6 +620,7 @@ GameObject:
   - component: {fileID: 537706862}
   - component: {fileID: 537706861}
   - component: {fileID: 537706860}
+  - component: {fileID: 537706865}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -749,6 +750,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &537706865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537706859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5051f42c03f640f4baf3ae3a1fe30618, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  speed: 3
+  detectionRadius: 12
+  vidaMaxima: 30
+  "da\xF1oAtaque": 10
 --- !u!1 &1298203872
 GameObject:
   m_ObjectHideFlags: 0
@@ -1204,6 +1221,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &1457423835 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8873408370443483838, guid: 12c2be55a40f9614c948718f4f592410, type: 3}
+  m_PrefabInstance: {fileID: 8537305298373451565}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1457423842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1457423835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 625c14eee3ad46c99df7c7c891ef668a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineThirdPersonFollow
+  Damping: {x: 0.1, y: 0.5, z: 0.3}
+  ShoulderOffset: {x: 0.5, y: -0.4, z: 0}
+  VerticalArmLength: 0.4
+  CameraSide: 1
+  CameraDistance: 2
+  AvoidObstacles:
+    Enabled: 0
+    CollisionFilter:
+      serializedVersion: 2
+      m_Bits: 1
+    IgnoreTag: 
+    CameraRadius: 0.2
+    DampingIntoCollision: 0
+    DampingFromCollision: 0.5
 --- !u!1 &1808444853
 GameObject:
   m_ObjectHideFlags: 0
@@ -1640,6 +1688,14 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 112
       objectReference: {fileID: 0}
+    - target: {fileID: 4495083357008489794, guid: 12c2be55a40f9614c948718f4f592410, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4495083357008489794, guid: 12c2be55a40f9614c948718f4f592410, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2
+      objectReference: {fileID: 0}
     - target: {fileID: 5065469477337572666, guid: 12c2be55a40f9614c948718f4f592410, type: 3}
       propertyPath: m_DefaultControlScheme
       value: 
@@ -1700,10 +1756,14 @@ PrefabInstance:
       propertyPath: textoContador
       value: 
       objectReference: {fileID: 1340655499}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1261912035715428355, guid: 12c2be55a40f9614c948718f4f592410, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8873408370443483838, guid: 12c2be55a40f9614c948718f4f592410, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1457423842}
   m_SourcePrefab: {fileID: 100100000, guid: 12c2be55a40f9614c948718f4f592410, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

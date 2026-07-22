@@ -1,15 +1,14 @@
 using UnityEngine;
 
-
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] private Transform player;
     [SerializeField] private float speed = 3.0f;
     [SerializeField] private float detectionRadius = 12.0f;
     [SerializeField] private float vidaMaxima = 30f;
     private float vidaActual;
     [SerializeField] private float dañoAtaque = 10f;
 
+    private Transform playerObjetivo; // El jugador al que va a perseguir
     private Rigidbody rb;
     private bool muerto = false;
 
@@ -17,26 +16,37 @@ public class EnemyController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         vidaActual = vidaMaxima;
-
-        GameObject jugadorObj = GameObject.FindGameObjectWithTag("Player");
-        if (jugadorObj != null) player = jugadorObj.transform;
     }
 
     void FixedUpdate()
     {
-        if (muerto || player == null) return;
+        if (muerto) return;
 
-        float distancia = Vector3.Distance(transform.position, player.position);
+        // 1. Encontrar cuál es el jugador más cercano en este frame
+        BuscarJugadorMasCercano();
+
+        // 2. Si no hay jugadores o ninguno está cerca, detener el movimiento horizontal
+        if (playerObjetivo == null)
+        {
+            rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+            return;
+        }
+
+        // 3. Evaluar distancia hacia el objetivo encontrado
+        float distancia = Vector3.Distance(transform.position, playerObjetivo.position);
 
         if (distancia < detectionRadius)
         {
-            Vector3 direccion = (player.position - transform.position);
-            direccion.y = 0;
+            Vector3 direccion = (playerObjetivo.position - transform.position);
+            direccion.y = 0; // Mantener la velocidad en el plano horizontal
             direccion.Normalize();
 
             rb.linearVelocity = new Vector3(direccion.x * speed, rb.linearVelocity.y, direccion.z * speed);
 
-            if (direccion != Vector3.zero) transform.forward = direccion;
+            if (direccion != Vector3.zero)
+            {
+                transform.forward = direccion;
+            }
         }
         else
         {
@@ -44,14 +54,38 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    void BuscarJugadorMasCercano()
+    {
+        // Encuentra a TODOS los jugadores activos en la escena
+        GameObject[] jugadores = GameObject.FindGameObjectsWithTag("Player");
+
+        float distanciaMasCorta = Mathf.Infinity;
+        Transform jugadorCercano = null;
+
+        foreach (GameObject p in jugadores)
+        {
+            float distancia = Vector3.Distance(transform.position, p.transform.position);
+            if (distancia < distanciaMasCorta)
+            {
+                distanciaMasCorta = distancia;
+                jugadorCercano = p.transform;
+            }
+        }
+
+        playerObjetivo = jugadorCercano;
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if (muerto) return;
 
+        // Le hace daño al jugador con el que chocó
         if (collision.gameObject.CompareTag("Player"))
         {
-            Player jugador = collision.gameObject.GetComponent<Player>();
-            if (jugador != null) jugador.TakeDamage(dañoAtaque);
+            if (collision.gameObject.TryGetComponent<Player>(out var jugador))
+            {
+                jugador.TakeDamage(dañoAtaque);
+            }
         }
     }
 
