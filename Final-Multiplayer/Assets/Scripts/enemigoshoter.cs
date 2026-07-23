@@ -10,7 +10,7 @@ public class enemigoshooter : MonoBehaviour
     public float lifeTime = 3f;
     public float vidaMaxima = 30f;
 
-    private GameObject player;
+    private Transform playerObjetivo; // Ahora guardamos el Transform del jugador objetivo
     private float vidaActual;
     private bool canShoot = true;
     private bool muerto = false;
@@ -18,22 +18,48 @@ public class enemigoshooter : MonoBehaviour
     void Start()
     {
         vidaActual = vidaMaxima;
-        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     void Update()
     {
-        if (muerto || player == null) return;
+        if (muerto) return;
 
-        Vector3 posicionPlana = new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z);
+        // 1. Buscar cuál es el jugador más cercano en cada frame
+        BuscarJugadorMasCercano();
 
+        if (playerObjetivo == null) return;
+
+        // 2. Apuntar al objetivo
+        Vector3 posicionPlana = new Vector3(playerObjetivo.position.x, transform.position.y, playerObjetivo.position.z);
         transform.LookAt(posicionPlana);
 
-        float distancia = Vector3.Distance(transform.position, player.transform.position);
+        // 3. Evaluar distancia y disparar
+        float distancia = Vector3.Distance(transform.position, playerObjetivo.position);
         if (distancia < visionRange && canShoot)
         {
             StartCoroutine(Shoot());
         }
+    }
+
+    void BuscarJugadorMasCercano()
+    {
+        // Encuentra a TODOS los jugadores en la escena (Jugador 1, Jugador 2, etc.)
+        GameObject[] jugadores = GameObject.FindGameObjectsWithTag("Player");
+
+        float distanciaMasCorta = Mathf.Infinity;
+        Transform jugadorCercano = null;
+
+        foreach (GameObject p in jugadores)
+        {
+            float distancia = Vector3.Distance(transform.position, p.transform.position);
+            if (distancia < distanciaMasCorta)
+            {
+                distanciaMasCorta = distancia;
+                jugadorCercano = p.transform;
+            }
+        }
+
+        playerObjetivo = jugadorCercano;
     }
 
     IEnumerator Shoot()
@@ -68,6 +94,8 @@ public class enemigoshooter : MonoBehaviour
         {
             muerto = true;
 
+            // Ojo: Si usas un singleton (Player.instancia) para el contador, 
+            // asegúrate de adaptarlo si cada jugador tiene su propia puntuación.
             if (Player.instancia != null)
             {
                 Player.instancia.contador++;
